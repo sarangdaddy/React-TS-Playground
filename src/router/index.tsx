@@ -1,6 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom';
 
-import { About } from '@/screens/About/About';
+import { About } from '@/screens/About';
 import { Home } from '@/screens/Home';
 import { Layout } from '@/screens/Layout';
 import { NotFound } from '@/screens/NotFound';
