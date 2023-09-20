@@ -19,9 +19,9 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -43,6 +43,11 @@
     ]
   },
   "devDependencies": {
+    "@craco/craco": "^7.1.0",
+    "@types/jest": "^27.5.2",
+    "@types/node": "^16.18.53",
+    "@types/react": "^18.2.22",
+    "@types/react-dom": "^18.2.7",
     "@types/styled-components": "^5.1.27",
     "@types/uuid": "^9.0.4",
     "@typescript-eslint/eslint-plugin": "^5.9.0",
@@ -51,10 +56,6 @@
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
     "eslint-plugin-react": "^7.33.2",
-    "prettier": "^3.0.3",
-    "@types/jest": "^27.5.2",
-    "@types/node": "^16.18.53",
-    "@types/react": "^18.2.22",
-    "@types/react-dom": "^18.2.7"
+    "prettier": "^3.0.3"
   }
 }
