@@ -1,5 +1,7 @@
+import * as S from './styles';
+
 const Coins = () => {
-  return <h1>Coins</h1>;
+  return <S.Title>Coins</S.Title>;
 };
 
 export default Coins;
