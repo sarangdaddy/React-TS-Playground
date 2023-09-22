@@ -1,12 +1,12 @@
 import { useOutletContext } from 'react-router-dom';
 
-interface contentsType {
+interface ContentsType {
   type: string;
   items: string[];
 }
 
 interface ContentsContext {
-  type: contentsType;
+  type: ContentsType;
 }
 
 export const Characters = () => {
@@ -16,11 +16,7 @@ export const Characters = () => {
   return (
     <>
       <h3>Characters</h3>
-      <ul>
-        {items.map((item, index) => (
-          <li key={index}>{item}</li>
-        ))}
-      </ul>
+      <ul>{items?.map((item, index) => <li key={index}>{item}</li>)}</ul>
     </>
   );
 };

@@ -38,7 +38,7 @@ export const router = createBrowserRouter([
                 element: <Chapters />,
               },
               {
-                path: 'Characters',
+                path: 'characters',
                 element: <Characters />,
               },
             ],

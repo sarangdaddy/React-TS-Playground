@@ -12,7 +12,7 @@ interface BookContext {
   book: BookType;
 }
 
-interface contentsType {
+interface ContentsType {
   type: string;
   items: string[];
 }
@@ -20,7 +20,7 @@ interface contentsType {
 export const Book = () => {
   const book = useOutletContext<BookContext>();
   const contents = book?.book?.contents;
-  const [selectedType, setSelectedType] = useState<contentsType | null>(null);
+  const [selectedType, setSelectedType] = useState<ContentsType | null>(null);
 
   return (
     <>

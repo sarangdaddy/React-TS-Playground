@@ -16,11 +16,7 @@ export const Chapters = () => {
   return (
     <>
       <h3>Chapters</h3>
-      <ul>
-        {items.map((item, index) => (
-          <li key={index}>{item}</li>
-        ))}
-      </ul>
+      <ul>{items?.map((item, index) => <li key={index}>{item}</li>)}</ul>
     </>
   );
 };
