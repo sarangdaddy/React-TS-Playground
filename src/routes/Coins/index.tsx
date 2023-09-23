@@ -1,8 +1,11 @@
-import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+
+import { useQuery } from '@tanstack/react-query';
+import { fetchCoins } from '@/api/fetcher';
+
 import * as S from './styles';
 
-interface CoinInterface {
+interface ICoin {
   id: string;
   name: string;
   symbol: string;
@@ -13,37 +16,18 @@ interface CoinInterface {
 }
 
 const Coins = () => {
-  const [coins, setCoins] = useState<CoinInterface[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    let isIgnore = false;
-
-    (async () => {
-      const response = await fetch('https://api.coinpaprika.com/v1/coins');
-      const json = await response.json();
-
-      if (isIgnore) {
-        setCoins(json.slice(0, 100));
-        setLoading(false);
-      }
-    })();
-
-    return () => {
-      isIgnore = true;
-    };
-  }, []);
+  const { isLoading, data } = useQuery<ICoin[]>(['allCoins'], fetchCoins);
 
   return (
     <S.Container>
       <S.Header>
         <S.Title>Coins</S.Title>
       </S.Header>
-      {loading ? (
+      {isLoading ? (
         <S.Loader>Loading...</S.Loader>
       ) : (
         <S.CoinsList>
-          {coins.map((coin) => (
+          {data?.slice(0, 100).map((coin) => (
             <S.Coin key={coin.id}>
               <Link to={`/${coin.id}`} state={coin}>
                 <S.Img

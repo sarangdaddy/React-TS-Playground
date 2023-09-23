@@ -134,14 +134,13 @@ const Coin = () => {
           </S.Overview>
 
           <S.Tabs>
-            <S.Tab isActive={chartMatch !== null}>
+            <S.Tab $isActive={chartMatch !== null ? true : false}>
               <Link to={`chart`}>Chart</Link>
             </S.Tab>
-            <S.Tab isActive={priceMatch !== null}>
+            <S.Tab $isActive={priceMatch !== null ? true : false}>
               <Link to={`price`}>Price</Link>
             </S.Tab>
           </S.Tabs>
-
           <Outlet />
         </>
       )}
