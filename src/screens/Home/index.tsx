@@ -1,6 +1,8 @@
-import { fetchCharacters } from '@/api/fetcher';
-import Loader from '@/components/Loader';
 import { useQuery } from '@tanstack/react-query';
+import { fetchCharacters } from '@/api/fetcher';
+
+import * as S from './styles';
+import Loader from '@/components/Loader';
 
 interface ICharacter {
   id: number;
@@ -15,10 +17,21 @@ const Home = () => {
   );
 
   return (
-    <>
-      <h1>Home</h1>
-      <Loader />
-    </>
+    <div>
+      <S.Title>Disney Characters</S.Title>
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <S.Container>
+          {data?.slice(0, 50).map((character) => (
+            <S.ItemLink to={`/character/${character.name}`} key={character.id}>
+              <img src={character.imageUrl} />
+              <span className="name">{character.name}</span>
+            </S.ItemLink>
+          ))}
+        </S.Container>
+      )}
+    </div>
   );
 };
 
