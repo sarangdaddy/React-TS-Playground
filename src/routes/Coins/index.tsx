@@ -1,8 +1,6 @@
 import { Link } from 'react-router-dom';
-
 import { useQuery } from '@tanstack/react-query';
 import { fetchCoins } from '@/api/fetcher';
-
 import * as S from './styles';
 
 interface ICoin {
