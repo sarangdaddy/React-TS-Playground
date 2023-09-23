@@ -4,7 +4,7 @@ export const fetchCharacters = () => {
   return fetch(`${BASE_URL}/characters`).then((response) => response.json());
 };
 
-export const fetchCharacterDetail = (characterId: string) => {
+export const fetchCharacterDetail = (characterId: string | undefined) => {
   return fetch(`${BASE_URL}/characters/${characterId}`).then((response) =>
     response.json(),
   );

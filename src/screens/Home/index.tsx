@@ -24,7 +24,7 @@ const Home = () => {
       ) : (
         <S.Container>
           {data?.slice(0, 50).map((character) => (
-            <S.ItemLink to={`/character/${character.name}`} key={character.id}>
+            <S.ItemLink to={`/character/${character.id}`} key={character.id}>
               <img src={character.imageUrl} />
               <span className="name">{character.name}</span>
             </S.ItemLink>
