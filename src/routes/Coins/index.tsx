@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useOutletContext } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { fetchCoins } from '@/api/fetcher';
 import * as S from './styles';
@@ -13,13 +13,20 @@ interface ICoin {
   type: string;
 }
 
+interface IOutletContext {
+  isDark: boolean;
+  toggleDark: () => void;
+}
+
 const Coins = () => {
   const { isLoading, data } = useQuery<ICoin[]>(['allCoins'], fetchCoins);
+  const ctx = useOutletContext<IOutletContext>();
 
   return (
     <S.Container>
       <S.Header>
         <S.Title>Coins</S.Title>
+        <button onClick={ctx.toggleDark}>다크모드</button>
       </S.Header>
       {isLoading ? (
         <S.Loader>Loading...</S.Loader>

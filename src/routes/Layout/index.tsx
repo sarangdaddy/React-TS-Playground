@@ -1,9 +1,14 @@
 import { Outlet } from 'react-router-dom';
 
-const Layout = () => {
+interface IOutletContext {
+  isDark: boolean;
+  toggleDark: () => void;
+}
+
+const Layout = ({ isDark, toggleDark }: IOutletContext) => {
   return (
     <>
-      <Outlet />
+      <Outlet context={{ isDark, toggleDark }} />
     </>
   );
 };
