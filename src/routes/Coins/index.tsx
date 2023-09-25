@@ -1,7 +1,9 @@
-import { Link, useOutletContext } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { fetchCoins } from '@/api/fetcher';
 import * as S from './styles';
+import { isDarkAtom } from '@/atoms';
+import { useSetRecoilState } from 'recoil';
 
 interface ICoin {
   id: string;
@@ -13,20 +15,17 @@ interface ICoin {
   type: string;
 }
 
-interface IOutletContext {
-  isDark: boolean;
-  toggleDark: () => void;
-}
-
 const Coins = () => {
+  const setDarkAtom = useSetRecoilState(isDarkAtom);
+  const toggleDarkAtom = () => setDarkAtom((prev) => !prev);
+
   const { isLoading, data } = useQuery<ICoin[]>(['allCoins'], fetchCoins);
-  const ctx = useOutletContext<IOutletContext>();
 
   return (
     <S.Container>
       <S.Header>
         <S.Title>Coins</S.Title>
-        <button onClick={ctx.toggleDark}>다크모드</button>
+        <button onClick={toggleDarkAtom}>Toggle Mode</button>
       </S.Header>
       {isLoading ? (
         <S.Loader>Loading...</S.Loader>
