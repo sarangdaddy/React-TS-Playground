@@ -25,9 +25,9 @@ export const BackBtn = styled.span`
 
 export const FilmsBox = styled.div`
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
 
   span {
     padding: 8px;
