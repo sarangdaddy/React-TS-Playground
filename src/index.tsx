@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+import { ThemeProvider } from 'styled-components';
+import theme from '@/styles/theme';
 import { RecoilRoot } from 'recoil';
 
 const root = ReactDOM.createRoot(
@@ -9,7 +11,9 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <RecoilRoot>
-      <App />
+      <ThemeProvider theme={theme.dark}>
+        <App />
+      </ThemeProvider>
     </RecoilRoot>
   </React.StrictMode>,
 );
