@@ -1,17 +1,17 @@
 import { useSetRecoilState } from 'recoil';
-import { Categories, IToDo, toDoState } from '@/atoms';
+import { FilterKeys, IToDo, toDoListState } from '@/atoms';
 
-const ToDo = ({ text, category, id }: IToDo) => {
-  const setToDos = useSetRecoilState(toDoState);
+const ToDo = ({ text, filterKey, id }: IToDo) => {
+  const setToDoList = useSetRecoilState(toDoListState);
 
-  const onClick = (newCateGory: IToDo['category']) => {
-    setToDos((prevToDos) => {
-      if (newCateGory === Categories.DEL) {
+  const onClick = (setFilterKey: IToDo['filterKey']) => {
+    setToDoList((prevToDos) => {
+      if (setFilterKey === FilterKeys.DEL) {
         return prevToDos.filter((toDo) => toDo.id !== id);
       }
 
       return prevToDos.map((toDo) =>
-        toDo.id === id ? { ...toDo, category: newCateGory } : toDo,
+        toDo.id === id ? { ...toDo, filterKey: setFilterKey } : toDo,
       );
     });
   };
@@ -19,20 +19,20 @@ const ToDo = ({ text, category, id }: IToDo) => {
   return (
     <li>
       <span>{text}</span>
-      {category == Categories.TOGO && (
+      {filterKey == FilterKeys.TOGO && (
         <>
-          <button onClick={() => onClick(Categories.BEEN)}>BEEN</button>
-          <button onClick={() => onClick(Categories.DEL)}>DEL</button>
+          <button onClick={() => onClick(FilterKeys.BEEN)}>BEEN</button>
+          <button onClick={() => onClick(FilterKeys.DEL)}>DEL</button>
         </>
       )}
-      {category == Categories.BEEN && (
+      {filterKey == FilterKeys.BEEN && (
         <>
-          <button onClick={() => onClick(Categories.TOGO)}>TOGO</button>
-          <button onClick={() => onClick(Categories.LIKE)}>LIKE</button>
+          <button onClick={() => onClick(FilterKeys.TOGO)}>TOGO</button>
+          <button onClick={() => onClick(FilterKeys.LIKE)}>LIKE</button>
         </>
       )}
-      {category == Categories.LIKE && (
-        <button onClick={() => onClick(Categories.BEEN)}>UNLIKE</button>
+      {filterKey == FilterKeys.LIKE && (
+        <button onClick={() => onClick(FilterKeys.BEEN)}>UNLIKE</button>
       )}
     </li>
   );

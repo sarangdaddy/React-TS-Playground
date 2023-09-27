@@ -1,6 +1,6 @@
 import { atom, selector } from 'recoil';
 
-export enum Categories {
+export enum FilterKeys {
   'TOGO' = 'TOGO',
   'BEEN' = 'BEEN',
   'LIKE' = 'LIKE',
@@ -10,28 +10,28 @@ export enum Categories {
 export interface IToDo {
   id: number;
   text: string;
-  category: Categories;
+  filterKey: FilterKeys;
 }
 
-export const categoryState = atom<Categories>({
-  key: 'category',
-  default: Categories.TOGO,
+export const toDoListState = atom<IToDo[]>({
+  key: 'toDoListState',
+  default: JSON.parse(localStorage.getItem('toDoList') || '[]'),
 });
 
-export const toDoState = atom<IToDo[]>({
-  key: 'toDo',
-  default: JSON.parse(localStorage.getItem('toDos') || '[]'),
+export const toDoListFilterState = atom<FilterKeys>({
+  key: 'toDoListFilterState',
+  default: FilterKeys.TOGO,
 });
 
 export const toDoSelector = selector({
   key: 'toDoSelector',
   get: ({ get }) => {
-    const toDos = get(toDoState);
+    const toDos = get(toDoListState);
 
     return [
-      toDos.filter((toDo) => toDo.category === Categories.TOGO),
-      toDos.filter((toDo) => toDo.category === Categories.BEEN),
-      toDos.filter((toDo) => toDo.category === Categories.LIKE),
+      toDos.filter((toDo) => toDo.filterKey === FilterKeys.TOGO),
+      toDos.filter((toDo) => toDo.filterKey === FilterKeys.BEEN),
+      toDos.filter((toDo) => toDo.filterKey === FilterKeys.LIKE),
     ];
   },
 });

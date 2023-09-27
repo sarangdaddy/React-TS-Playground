@@ -1,280 +1,287 @@
-//https://codesandbox.io/s/crazy-rgb-tlhgrs?file=/src/components/ToDo.tsx
+# Recoil과 React Hook Form을 이용한 ToDoList 만들기
 
-# React Query
+- Recoil의 Atoms와 Selectors 그리고 React Hook Form을 학습하며 ToDoList를 만들어 보자.
 
-- React Query는 웹 애플리케이션에서 서버 `데이터를 효율적으로 가져오고`, `캐싱`하며 동기화하는 데 도움을 주는 라이브러리다.
-- 이 라이브러리의 도움으로 개발자는 서버와의 `데이터 동기화`, `데이터 리프레시`, `오류 처리` 등의 복잡한 작업을 훨씬 간결하게 처리할 수 있다.
+## Selectors란?
 
-## React Query의 장점
+- 앞서 학습한 `Atoms`와 함께 Recoil에는 `Selectors`라는 개념이 존재한다.
+- `Selectors`는 Atoms 상태 값을 동기 또는 비동기 방식을 통해 `변환`한다.
 
-- 자동 데이터 리프레시 : 사용자에게 항상 최신의 데이터를 제공한다.
-- 백그라운드 데이터 동기화 : 애플리케이션이 백그라운드에서도 데이터를 동기화한다.
-- 오류 처리 : API 호출에서 오류가 발생하면 error 및 isError 상태를 통해 쉽게 처리할 수 있다.
-- 캐싱 : 데이터를 자동으로 캐시하여 반복적인 요청을 피하고 성능을 향상시킨다.
+> Recoil의 selectors는 파생 상태(derived state) 또는 상태 변환을 계산하고 관리하기 위한 도구다.  
+> selectors는 기본적으로 하나 이상의 atom 또는 다른 selectors의 상태를 기반으로 새로운 상태 값을 계산하는 `순수 함수`다.
 
-## 기존 fetch 방식
+## Selectors의 특징
 
-- 전통적인 데이터 가져오기 방법은 useState와 useEffect를 사용하여 데이터 상태를 관리하고 API 호출을 수행한다.
+- Selector는 atoms나 다른 selectors를 입력으로 받아들이는 순수 함수(pure function)다.
+- 상위의 atoms 또는 selectors가 업데이트되면 하위의 selector 함수도 다시 실행된다.
+- 컴포넌트들은 selectors를 atoms처럼 구독할 수 있으며 selectors가 변경되면 컴포넌트들도 다시 렌더링 된다.
+- 컴포넌트의 관점에서 보면 selectors와 atoms는 동일한 인터페이스를 가지므로 서로 대체할 수 있다.
+
+### 1. 파생 상태 (get)
+
+- 여러 `atom`의 값을 결합하여 새로운 상태 값을 계산할 수 있다.
+
+```jsx
+const lengthState = selector({
+  key: 'lengthState',
+  get: ({ get }) => {
+    const text = get(textState);
+    return text.length;
+  },
+});
+```
+
+### 2. 비동기 쿼리 (get)
+
+- `selectors`는 비동기 작업을 수행하고 결과를 상태로 반환할 수 있다.
+
+```jsx
+const userDataSelector = selector({
+  key: 'userData',
+  get: async ({ get }) => {
+    const response = await fetch('/api/user');
+    return response.json();
+  },
+});
+```
+
+### 3. 다른 상태 변경 (set)
+
+- selectors는 set 함수를 사용하여 연관된 atom 또는 다른 selectors의 상태를 변경할 수 있다.
+
+```jsx
+const resetAllData = selector({
+  key: 'resetAllData',
+  set: ({ reset }) => {
+    reset(dataAtom1);
+    reset(dataAtom2);
+  },
+});
+```
+
+### 4. 캐싱
+
+- selectors는 계산된 결과를 자동으로 캐시한다.
+- 같은 입력에 대한 결과가 이미 캐시되어 있으면, selectors는 캐시된 값을 재사용한다.
+
+### 5. 의존성 관리
+
+- selectors는 자동으로, 의존하는 atom 또는 selectors의 변화를 감지한다.
+- 따라서 의존하는 상태가 변경되면 해당 selectors도 자동으로 업데이트된다.
+
+## ToDoList 만들기
+
+### 1. Recoil 상태 설정 (Atoms, Selectors)
+
+- 전역 상태로 관리할 toDoList 배열을 atoms로 정의한다.
+- toDoList에 존재하는 toDo들의 상태를 기반으로 filter하기 위한 Selectors를 정의한다.
 
 ```tsx
-// 기존 코드 예시
-const Coins = () => {
-  const [coins, setCoins] = useState<ICoin[]>([]);
-  const [loading, setLoading] = useState(true);
+import { atom, selector } from 'recoil';
 
+export enum FilterKeys {
+  'TOGO' = 'TOGO',
+  'BEEN' = 'BEEN',
+  'LIKE' = 'LIKE',
+  'DEL' = 'DEL',
+}
+
+export interface IToDo {
+  id: number;
+  text: string;
+  filterKey: FilterKeys;
+}
+
+export const toDoListFilterState = atom<FilterKeys>({
+  key: 'toDoListFilterState',
+  default: FilterKeys.TOGO,
+});
+
+export const toDoListState = atom<IToDo[]>({
+  key: 'toDoListState',
+  default: JSON.parse(localStorage.getItem('toDoList') || '[]'),
+});
+
+export const toDoSelector = selector({
+  key: 'toDoSelector',
+  get: ({ get }) => {
+    const toDos = get(toDoListState);
+
+    return [
+      toDos.filter((toDo) => toDo.filterKey === FilterKeys.TOGO),
+      toDos.filter((toDo) => toDo.filterKey === FilterKeys.BEEN),
+      toDos.filter((toDo) => toDo.filterKey === FilterKeys.LIKE),
+    ];
+  },
+});
+```
+
+<img src="https://velog.velcdn.com/images/sarang_daddy/post/ec2e3248-e06c-43c8-b4d4-b55061195560/image.png" width="50%">
+
+- ToDo가 되는 개체의 타입을 정의한다.
+- Filter로 사용될 key값을 enum을 사용해 안정성을 높여준다.
+
+<img src="https://velog.velcdn.com/images/sarang_daddy/post/f9ba1912-d95d-4e16-bb56-ecd5acd536b1/image.png" width="50%">
+
+- 사용자가 입력하는 ToDo들을 가지는 리스트 상태다.
+- 로컬스토리지에 저장된 값이 있다면 불러오고 없다면 빈 배열로 초기화 한다.
+
+<img src="https://velog.velcdn.com/images/sarang_daddy/post/70e11749-aff5-4741-ad4b-0f70f98d7b37/image.png" width="50%">
+
+- toDo의 filterKey 속성에 들어갈 값
+- 최초 toDo 생성시 TOGO 키값으로 초기화 한다.
+
+<img src="https://velog.velcdn.com/images/sarang_daddy/post/ac85de0a-288a-4e87-b788-871da71a2ff8/image.png" width="50%">
+
+- `toDoListState` atom의 전체 할 일 목록을 가져와서, 각 filterKey에 따라 필터링하여 새로운 배열을 반환한다.
+- 이렇게 **원본 상태를 기반으로 새로운 값을 계산하는** 기능이 selector의 핵심적인 특징이다.
+
+### 2. Form 컴포넌트 구현
+
+- React Hook Form의 useForm 훅을 사용하여 폼을 구현한다.
+- 폼 요소(예: input)에 register 함수를 연결하여 폼과 관련된 상태와 함수를 관리한다.
+- 필요한 경우 유효성 검사 또는 에러 핸들링을 구현한다.
+
+```tsx
+import { useEffect } from 'react';
+import { useRecoilValue } from 'recoil';
+import { toDoSelector, toDoListState } from '@/atoms';
+import ToDo from './ToDo';
+import CreateToDo from './CreateToDo';
+
+export default function ToDoList() {
+  // 전역 상태로 관리되는 toDoListState 상태값을 불러온다.
+  const toDoList = useRecoilValue(toDoListState);
+  // toDoSelector로 필터링된 배열값들을 불러온다.
+  const [toGo, been, like] = useRecoilValue(toDoSelector);
+
+  // toDoList의 최신 상태를 로컬스토리지에 저장한다.
   useEffect(() => {
-    let isIgnore = false;
+    localStorage.setItem('toDoList', JSON.stringify(toDoList));
+  }, [toDoList]);
 
-    (async () => {
-      const response = await fetch('https://api.coinpaprika.com/v1/coins');
-      const json = await response.json();
+  return (
+    <main>
+      <h2>내가 가고싶은 나라들</h2>
+      <CreateToDo />
+      <ul>{toGo?.map((toDo) => <ToDo key={toDo.id} {...toDo} />)}</ul>
+      <h2>내가 가본 나라들</h2>
+      <ul>{been?.map((toDo) => <ToDo key={toDo.id} {...toDo} />)}</ul>
+      <h2>내가 좋아하는 나라들</h2>
+      <ul>{like?.map((toDo) => <ToDo key={toDo.id} {...toDo} />)}</ul>
+    </main>
+  );
+}
+```
 
-      if (!isIgnore) {
-        setCoins(json.slice(0, 100));
-        setLoading(false);
+<img src="https://velog.velcdn.com/images/sarang_daddy/post/542c8f44-4d00-4b1c-ac06-c3d3f57c593a/image.png" width="50%">
+
+- toDoSelector로 필터링된 값들을 UI 요소로 사용하고 있다.
+- 실제 상태의 원본값은 필터링 되어 분리되어 있지 않다.
+- 원본 상태의 훼손과 변경없이 selector를 활용한 매우 유용한 기능이다.
+
+### 3. 컴포넌트에서 Recoil 상태의 사용
+
+- 폼의 제출 함수(onSubmit) 내에서 Recoil 상태를 업데이트하거나, 폼의 초기 값으로 Recoil 상태를 사용한다.
+- 필요한 경우 selectors를 사용하여 폼 데이터를 변환하거나 비동기 작업을 수행한다.
+
+```tsx
+// CreateToDo 컴포넌트
+const CreateToDo = () => {
+  // toDoList에 새로운 toDo를 추가하기 위해 useSetRecoilState 함수 호출
+  const setToDoList = useSetRecoilState(toDoListState);
+  // 새로운 toDo의 필터키 값을 주기위해 초기화 filterKey값 호출
+  const filterKey = useRecoilValue(toDoListFilterState);
+
+  const { register, handleSubmit, setValue, formState } = useForm<IForm>();
+
+  const handleValid = ({ toDo }: IForm) => {
+    setToDoList((prevToDos) => [
+      ...prevToDos,
+      { text: toDo, id: Date.now(), filterKey },
+    ]);
+    setValue('toDo', '');
+  };
+
+  return (
+    <form onSubmit={handleSubmit(handleValid)}>
+      <input
+        {...register('toDo', {
+          required: 'Please write a To Do',
+        })}
+        placeholder="나라 이름"
+      />
+      <button>가자!</button>
+      <span>{formState.errors.toDo?.message}</span>
+    </form>
+  );
+};
+
+export default CreateToDo;
+```
+
+<img src="https://velog.velcdn.com/images/sarang_daddy/post/5b293c0b-e3b9-4c06-b403-b0ed5c63a8ec/image.png" width="50%">
+
+- RHF로 제출된 toDo를 기존 toDoList에 추가하는 함수 로직
+- 최초 filterKey 값은 전역 상태에서 지정한 TODO가 된다.
+- 전역 상태로 관리하기에 전역 상태에서만 변경해주면 구독 중인 모든 컴포넌트에 동일하기 적용된다.
+- 즉, 다른 컴포넌트에서 filterKey를 활용한 기능 추가에 더욱 유용하다.
+
+```tsx
+// ToDo 컴포넌트
+const ToDo = ({ text, filterKey, id }: IToDo) => {
+  // toDoList의 toDo 상태를 변경하기 위해 useSetRecoilState 함수 호출
+  const setToDoList = useSetRecoilState(toDoListState);
+
+  const onClick = (setFilterKey: IToDo['filterKey']) => {
+    setToDoList((prevToDos) => {
+      if (setFilterKey === FilterKeys.DEL) {
+        return prevToDos.filter((toDo) => toDo.id !== id);
       }
-    })();
 
-    return () => {
-      isIgnore = true;
-    };
-  }, []);
-
-  // 렌더링 로직
-};
-```
-
-## React Query 사용
-
-### 1. 설치
-
-```bash
-npm i @tanstack/react-query
-```
-
-### 2. QueryClient, QueryClientProvider 생성
-
-- React Query를 사용하려면 먼저 QueryClient를 생성하고 이를 QueryClientProvider에 전달해야 한다.
-
-```tsx
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-
-const queryClient = new QueryClient();
-
-function App() {
-  return (
-    <ThemeProvider theme={theme.light}>
-      <QueryClientProvider client={queryClient}>
-        <GlobalStyle />
-        <RouterProvider router={router} />
-      </QueryClientProvider>
-    </ThemeProvider>
-  );
-}
-
-export default App;
-```
-
-### 3. useQuery 훅으로 fetcher 함수 전달
-
-- 데이터를 가져오기 위해 useQuery 훅을 사용하고, 데이터 가져오기 함수를 제공한다.
-
-```tsx
-const Coins = () => {
-  const { isLoading, data } = useQuery(['allCoins'], fetchCoins);
-
-	/* 아래 코드는 모두 삭제된다. */
-  // const [coins, setCoins] = useState<CoinInterface[]>([]);
-  // const [loading, setLoading] = useState(true);
-
-  // useEffect(() => {
-  //   let isIgnore = false;
-
-  //   (async () => {
-  //     const response = await fetch('https://api.coinpaprika.com/v1/coins');
-  //     const json = await response.json();
-
-  //     if (isIgnore) {
-  //       setCoins(json.slice(0, 100));
-  //       setLoading(false);
-  //     }
-  //   })();
-
-  //   return () => {
-  //     isIgnore = true;
-  //   };
-  // }, []);
-```
-
-- API 요청 함수는 따로 파일을 분리해서 관리한다.
-
-```tsx
-// api fetcher 파일
-const BASE_URL = `https://api.coinpaprika.com/v1`;
-
-export const fetchCoins = () => {
-  return fetch(`${BASE_URL}/coins`).then((response) => response.json());
-};
-
-export const fetchCoinInfo = (coinId: string | undefined) => {
-  return fetch(`${BASE_URL}/coins/${coinId}`).then((response) =>
-    response.json(),
-  );
-};
-
-export const fetchCoinTickers = (coinId: string | undefined) => {
-  return fetch(`${BASE_URL}/tickers/${coinId}`).then((response) =>
-    response.json(),
-  );
-};
-```
-
-### 4. useQuery 훅 설명
-
-```tsx
-const { isLoading, data } = useQuery(['allCoins'], fetchCoins);
-```
-
-- isLoading : 기존에 state로 따로 관리해주던 로딩 불리언 값을 react query에서 반환해준다.
-- data : fetch후 받아온 데이터를 반환해준다.
-- [’allCoins’] : Query Key - query를 고유하게 식별해주는 key로 필수 항목이다.
-- React Query는 쿼리 키를 기반으로 쿼리 캐싱을 관리한다.
-
-### 5. 렌더링 로직에 적용
-
-```tsx
-import { Link } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import { fetchCoins } from '@/api/fetcher';
-import * as S from './styles';
-
-interface ICoin {
-  id: string;
-  name: string;
-  symbol: string;
-  rank: number;
-  is_new: boolean;
-  is_active: boolean;
-  type: string;
-}
-
-const Coins = () => {
-  const { isLoading, data } = useQuery<ICoin[]>(['allCoins'], fetchCoins);
+      return prevToDos.map((toDo) =>
+        toDo.id === id ? { ...toDo, filterKey: setFilterKey } : toDo,
+      );
+    });
+  };
 
   return (
-    <S.Container>
-      <S.Header>
-        <S.Title>Coins</S.Title>
-      </S.Header>
-      {isLoading ? (
-        <S.Loader>Loading...</S.Loader>
-      ) : (
-        <S.CoinsList>
-          {data?.slice(0, 100).map((coin) => (
-            <S.Coin key={coin.id}>
-              <Link to={`/${coin.id}`} state={coin}>
-                <S.Img
-                  src={`https://coinicons-api.vercel.app/api/icon/${coin.symbol.toLowerCase()}`}
-                />
-                <span>{coin.name}</span>
-                <span>&rarr;</span>
-              </Link>
-            </S.Coin>
-          ))}
-        </S.CoinsList>
+    <li>
+      <span>{text}</span>
+      {filterKey == FilterKeys.TOGO && (
+        <>
+          <button onClick={() => onClick(FilterKeys.BEEN)}>BEEN</button>
+          <button onClick={() => onClick(FilterKeys.DEL)}>DEL</button>
+        </>
       )}
-    </S.Container>
+      {filterKey == FilterKeys.BEEN && (
+        <>
+          <button onClick={() => onClick(FilterKeys.TOGO)}>TOGO</button>
+          <button onClick={() => onClick(FilterKeys.LIKE)}>LIKE</button>
+        </>
+      )}
+      {filterKey == FilterKeys.LIKE && (
+        <button onClick={() => onClick(FilterKeys.BEEN)}>UNLIKE</button>
+      )}
+    </li>
   );
 };
 
-export default Coins;
+export default ToDo;
 ```
 
-> useState와 useEffect로 상태를 관리하고 데이터를 호출하던 로직을 react query를 통해 한번에 해결할 수 있다.  
-> 💡 React Query는 `데이터를 자동으로 캐싱`하므로 동일한 요청을 여러 번 수행할 필요가 없다.
+<img src="https://velog.velcdn.com/images/sarang_daddy/post/a6557d5d-9f8d-4a4b-a7df-5230d53d7af6/image.png" width="50%">
 
-## 여러 useQuery 사용하기
+- ToDo 컴포넌트는 앞서 toDoList에서 필터링된 상태값들을 props로 받아오고 있다.
+- 원본 상태를 변경하지 않고 selector로 새로운 상태값을 파생하여 만든 컴포넌트가 된다.
 
-- 때로는 하나의 컴포넌트에서 여러 데이터 소스를 동시에 요청해야 할 수 있다.
-- React Query의 useQuery는 이러한 상황을 간단히 처리할 수 있게 해준다.
+> 원본 상태를 필터링하여 렌더링한 UI, 원본 상태를 파생하여 생성한 컴포넌트 모두 원본 상태와 의존되어 있다.
 
-### Query key 구성
+<img src="https://velog.velcdn.com/images/sarang_daddy/post/0643c229-c87b-4693-a3c5-7ed68af8c7fd/image.png" width="50%">
 
-- 각 쿼리는 고유한 키를 가져야 한다.
-- 이 키를 사용하여 내부적으로 캐싱된 데이터를 관리한다.
-- 복잡한 쿼리의 경우, 쿼리 키를 배열로 구성하여 고유성을 보장할 수 있다.
-- 예를 들어, 특정 코인의 정보와 티커를 동시에 가져오는 경우 다음과 같이 작성할 수 있다.
+- 파생된 값으로 만들어진 컴포넌트 ToDo에서도 전역 상태의 toDoList를 변경할 수 있다.
+- toDoList 상태를 변경 하면 의존성에 의해서 toDoList를 구독한 컴포넌트들은 모두 리렌더링 된다.
 
-```tsx
-const { isLoading: infoLoading, data: infoData } = useQuery<IInfoData>(
-  ['info', coinId],
-  () => fetchCoinInfo(coinId.coinId),
-);
+## ToDoList 결과물
 
-const { isLoading: tickersLoading, data: tickersData } = useQuery<IPriceData>(
-  ['tickers', coinId],
-  () => fetchCoinTickers(coinId.coinId),
-);
-```
-
-- 위의 코드에서 coinId를 쿼리 키의 일부로 사용하여 각 코인에 대한 정보와 티커 쿼리를 고유하게 식별한다.
-
-### 여러 쿼리의 상태 관리
-
-- 두 개 이상의 useQuery를 사용할 때, 각 쿼리의 로딩 상태나 에러 상태를 개별적으로 처리할 수 있다.
-- 예를 들어, 위의 예시에서는 infoLoading과 tickersLoading을 통해 각 쿼리의 로딩 상태를 파악할 수 있다.
-- 필요한 경우, 이러한 상태들을 조합하여 컴포넌트의 전체 로딩 상태를 결정할 수도 있다.
-
-```tsx
-const loading = infoLoading || tickersLoading;
-```
-
-- 이렇게하면 Coin 컴포넌트의 렌더링 로직에서 loading 변수를 사용하여 전체 로딩 상태를 처리할 수 있다.
-
-<br/>
-
-# React Query Devtools
-
-- 앞서 React Query는 데이터를 자동으로 캐시하므로 동일한 요청을 여러 번 수행할 필요가 없다고 했다.
-- React Query Devtools는 `캐싱된 쿼리`와 `관련된 정보`를 시각적으로 확인할 수 있게 도와주는 도구다.
-
-## React Query Devtools 설치
-
-```bash
-npm i @tanstack/react-query-devtools
-```
-
-## React Query Devtools 적용
-
-```tsx
-import router from './router';
-import { RouterProvider } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-
-import { ThemeProvider } from 'styled-components';
-import GlobalStyle from './styles/GlobalStyle';
-import theme from '@/styles/theme';
-
-const queryClient = new QueryClient();
-
-function App() {
-  return (
-    <ThemeProvider theme={theme.light}>
-      <QueryClientProvider client={queryClient}>
-        <GlobalStyle />
-        <RouterProvider router={router} />
-        <ReactQueryDevtools initialIsOpen={false} />
-      </QueryClientProvider>
-    </ThemeProvider>
-  );
-}
-
-export default App;
-```
-
-- 애플리케이션에서 캐싱된 데이터를 보여주는 도구가 추가된다.
-
-<img src="https://velog.velcdn.com/images/sarang_daddy/post/b10eac6a-e355-40b5-bdda-063eeb63ae4e/image.png" width="80%">
-
-> Devtools는 개발 모드에서만 번들에 포함되므로, 프로덕션 빌드 중에 제외하는 것에 대해 걱정할 필요가 없다.
+![](https://velog.velcdn.com/images/sarang_daddy/post/27114a9c-8708-45f5-998f-4e83fffa84fc/image.gif)
