@@ -3,11 +3,14 @@ import {
   Outlet,
   useLocation,
   useMatch,
+  useNavigate,
   useParams,
 } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { fetchCoinInfo, fetchCoinTickers } from '@/api/fetcher';
 import * as S from './styles';
+import { useSetRecoilState } from 'recoil';
+import { isDarkAtom } from '@/atoms';
 
 interface IInfoData {
   id: string;
@@ -68,8 +71,11 @@ interface IPriceData {
 const Coin = () => {
   const coinId = useParams();
   const { state } = useLocation();
+  const navigate = useNavigate();
   const priceMatch = useMatch('/:coinId/price');
   const chartMatch = useMatch('/:coinId/chart');
+  const setDarkAtom = useSetRecoilState(isDarkAtom);
+  const toggleDarkAtom = () => setDarkAtom((prev) => !prev);
 
   const { isLoading: infoLoading, data: infoData } = useQuery<IInfoData>(
     ['info', coinId],
@@ -80,14 +86,19 @@ const Coin = () => {
     () => fetchCoinTickers(coinId.coinId),
   );
 
+  const handleBackPage = () => {
+    navigate(-1);
+  };
+
   const loading = infoLoading || tickersLoading;
 
   return (
     <S.Container>
       <S.Header>
-        <S.Title>
+        <S.Title onClick={handleBackPage}>
           {state?.name ? state.name : loading ? 'Loading...' : infoData?.name}
         </S.Title>
+        <S.DarkModeIcon onClick={toggleDarkAtom} icon="moon" size="2x" />
       </S.Header>
       {loading ? (
         <S.Loader>Loading...</S.Loader>

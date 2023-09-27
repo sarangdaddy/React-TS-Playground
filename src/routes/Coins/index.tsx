@@ -25,7 +25,7 @@ const Coins = () => {
     <S.Container>
       <S.Header>
         <S.Title>Coins</S.Title>
-        <button onClick={toggleDarkAtom}>Toggle Mode</button>
+        <S.DarkModeIcon onClick={toggleDarkAtom} icon="moon" size="2x" />
       </S.Header>
       {isLoading ? (
         <S.Loader>Loading...</S.Loader>
