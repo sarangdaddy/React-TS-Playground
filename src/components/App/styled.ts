@@ -71,6 +71,10 @@ export const BtnSvg = styled(motion.svg)`
   width: 100px;
   height: 100px;
   cursor: pointer;
+
+  &:focus {
+    outline: none;
+  }
 `;
 
 export const InfoBox = styled.div`
