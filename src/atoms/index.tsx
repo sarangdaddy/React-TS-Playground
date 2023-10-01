@@ -1,7 +1,7 @@
 import { atom } from 'recoil';
 
 export enum InitialValues {
-  'TIME' = 10,
+  'TIME' = 1500, // 타이머 시간 세팅
   'ROUND' = 0,
   'GOAL' = 0,
   'MAX_ROUND' = 4,

@@ -32,6 +32,11 @@ export const TimeBox = styled.div`
   }
 `;
 
+export const boxVariants = {
+  initial: { opacity: 0, scale: 0.8 },
+  visible: { opacity: 1, scale: 1, transition: { duration: 0.3 } },
+};
+
 export const Box = styled(motion.div)`
   background-color: rgba(255, 255, 255, 1);
   border-radius: 10px;
@@ -46,13 +51,26 @@ export const Box = styled(motion.div)`
     0 10px 20px rgba(0, 0, 0, 0.06);
 `;
 
-export const PlayButton = styled.div`
+export const BtnContainer = styled.div`
   color: white;
+`;
 
-  svg {
-    width: 100px;
-    height: 100px;
-  }
+export const btnVariants = {
+  initial: {},
+  hover: {
+    scale: 1.1,
+    transition: { duration: 0.4 },
+  },
+  tap: {
+    scale: 0.9,
+    transition: { duration: 0.4 },
+  },
+};
+
+export const BtnSvg = styled(motion.svg)`
+  width: 100px;
+  height: 100px;
+  cursor: pointer;
 `;
 
 export const InfoBox = styled.div`
