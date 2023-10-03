@@ -63,10 +63,6 @@ body {
   font-family: 'Source Sans 3', sans-serif;
   color:black;
   line-height: 1.2;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height : 100vh
 }
 `;
 
