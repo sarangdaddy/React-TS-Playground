@@ -1,0 +1,10 @@
+{
+  "files": {
+    "main.js": "/react-ts-playground/static/js/main.d651001c.js",
+    "index.html": "/react-ts-playground/index.html",
+    "main.d651001c.js.map": "/react-ts-playground/static/js/main.d651001c.js.map"
+  },
+  "entrypoints": [
+    "static/js/main.d651001c.js"
+  ]
+}
