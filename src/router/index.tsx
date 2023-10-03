@@ -3,8 +3,9 @@ import { ROUTE_PATH } from './routePath';
 import Layout from '@/screens/Layout';
 import NotFound from '@/screens/NotFound';
 import Home from '@/screens/Home';
-import Tv from '@/screens/Tv';
-import Search from '@/screens/Search';
+import Popular from '@/screens/Popular';
+import ComingSoon from '@/screens/ComingSoon';
+import NowPlaying from '@/screens/NowPlaying';
 
 export const router = createBrowserRouter([
   {
@@ -17,12 +18,16 @@ export const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: ROUTE_PATH.TV,
-        element: <Tv />,
+        path: ROUTE_PATH.POPULAR,
+        element: <Popular />,
       },
       {
-        path: ROUTE_PATH.SEARCH,
-        element: <Search />,
+        path: ROUTE_PATH.COMING_SOON,
+        element: <ComingSoon />,
+      },
+      {
+        path: ROUTE_PATH.NOW_PLAYING,
+        element: <NowPlaying />,
       },
     ],
   },
