@@ -1,8 +1,13 @@
-import { Link } from 'react-router-dom';
-import * as S from './styles';
-import { motion } from 'framer-motion';
-import { ROUTE_PATH } from '@/router/routePath';
 import { useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { ROUTE_PATH } from '@/router/routePath';
+import * as S from './styles';
+import {
+  motion,
+  useAnimation,
+  useMotionValueEvent,
+  useScroll,
+} from 'framer-motion';
 import useClickOutside from '@/Hooks/useClickOutside';
 
 const TABS = [
@@ -15,6 +20,16 @@ const TABS = [
 const Header = () => {
   const [searchOpen, setSearchOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const { scrollY } = useScroll();
+  const navAnimation = useAnimation();
+
+  useMotionValueEvent(scrollY, 'change', (lastSet) => {
+    if (lastSet > 16) {
+      navAnimation.start('scroll');
+    } else {
+      navAnimation.start('top');
+    }
+  });
 
   const toggleSearch = () => {
     setSearchOpen((prev) => !prev);
@@ -29,7 +44,11 @@ const Header = () => {
   });
 
   return (
-    <S.Navigation>
+    <S.Navigation
+      variants={S.navVariants}
+      animate={navAnimation}
+      initial={'top'}
+    >
       <S.Column>
         <Link to={ROUTE_PATH.HOME}>
           <S.Logo
@@ -55,7 +74,7 @@ const Header = () => {
         <S.Search>
           <motion.svg
             onClick={toggleSearch}
-            animate={{ x: searchOpen ? -180 : 0 }}
+            animate={{ x: searchOpen ? -185 : 0 }}
             transition={{ type: 'linear' }}
             fill="currentColor"
             viewBox="0 0 20 20"
@@ -68,9 +87,10 @@ const Header = () => {
             />
           </motion.svg>
           <S.Input
+            animate={{ scaleX: searchOpen ? 1 : 0 }}
+            initial={{ scaleX: 0 }}
             ref={inputRef}
             transition={{ type: 'linear' }}
-            animate={{ scaleX: searchOpen ? 1 : 0 }}
             placeholder="제목, 사람, 장르"
           />
         </S.Search>
