@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom';
 import * as S from './styles';
 import { motion } from 'framer-motion';
 import { ROUTE_PATH } from '@/router/routePath';
+import { useRef, useState } from 'react';
+import useClickOutside from '@/Hooks/useClickOutside';
 
 const TABS = [
   { id: 0, label: '홈', path: ROUTE_PATH.HOME },
@@ -11,6 +13,21 @@ const TABS = [
 ];
 
 const Header = () => {
+  const [searchOpen, setSearchOpen] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const toggleSearch = () => {
+    setSearchOpen((prev) => !prev);
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  };
+
+  useClickOutside({
+    ref: inputRef,
+    callback: () => setSearchOpen(false),
+  });
+
   return (
     <S.Navigation>
       <S.Column>
@@ -35,7 +52,28 @@ const Header = () => {
         </S.Items>
       </S.Column>
       <S.Column>
-        <button>search</button>
+        <S.Search>
+          <motion.svg
+            onClick={toggleSearch}
+            animate={{ x: searchOpen ? -180 : 0 }}
+            transition={{ type: 'linear' }}
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fillRule="evenodd"
+              d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+              clipRule="evenodd"
+            />
+          </motion.svg>
+          <S.Input
+            ref={inputRef}
+            transition={{ type: 'linear' }}
+            animate={{ scaleX: searchOpen ? 1 : 0 }}
+            placeholder="제목, 사람, 장르"
+          />
+        </S.Search>
       </S.Column>
     </S.Navigation>
   );

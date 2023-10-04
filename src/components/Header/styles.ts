@@ -50,11 +50,21 @@ export const Item = styled(NavLink)`
 `;
 
 export const Search = styled.span`
+  position: relative;
   color: white;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
 
   svg {
     height: 25px;
   }
+`;
+
+export const Input = styled(motion.input)`
+  transform-origin: right center;
+  position: absolute;
+  left: -150px;
 `;
 
 export const logoVariants = {
