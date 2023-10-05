@@ -46,14 +46,17 @@ export const Item = styled(NavLink)`
   margin-right: 20px;
   cursor: pointer;
   color: ${(props) => props.theme.white.darker};
+  opacity: 0.8;
   transition: 0.3s ease-in-out;
 
   &.active {
-    opacity: 0.7;
+    opacity: 1;
+    font-weight: 600;
+    pointer-events: none;
   }
 
   &:hover {
-    opacity: 0.7;
+    opacity: 0.5;
   }
 `;
 
