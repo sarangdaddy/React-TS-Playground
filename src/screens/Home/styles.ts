@@ -36,8 +36,6 @@ export const Overview = styled.p`
 export const Slider = styled.div`
   position: relative;
   top: -112px;
-  color: red;
-  font-size: 55px;
   margin: 0 50px;
 `;
 
@@ -57,14 +55,64 @@ export const Row = styled(motion.div)`
   display: grid;
   gap: 10px;
   grid-template-columns: repeat(6, 1fr);
-  margin-bottom: 5px;
   position: absolute;
   width: 100%;
 `;
 
-export const Box = styled(motion.div)<{ $bgPhoto: string }>`
-  background-image: url(${(props) => props.$bgPhoto});
-  background-size: cover;
-  background-position: center, center;
+export const boxVariants = {
+  normal: {
+    scale: 1,
+  },
+  hover: {
+    scale: 1.3,
+    y: -50,
+    transition: {
+      delay: 0.3,
+      duration: 0.1,
+      type: 'tween',
+    },
+  },
+};
+
+export const Box = styled(motion.div)`
   height: 200px;
+
+  &:first-child {
+    transform-origin: center left;
+  }
+  &:last-child {
+    transform-origin: center right;
+  }
+`;
+
+export const Image = styled.img`
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+`;
+
+export const infoVariants = {
+  hover: {
+    opacity: 1,
+    transition: {
+      delay: 0.3,
+      duration: 0.1,
+      type: 'tween',
+    },
+  },
+};
+
+export const Info = styled(motion.div)`
+  padding: 10px;
+  background-color: ${(props) => props.theme.black.lighter};
+  opacity: 0;
+  width: 100%;
+
+  h4 {
+    text-align: center;
+    font-size: 13px;
+    font-weight: 400;
+  }
 `;

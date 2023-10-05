@@ -37,7 +37,7 @@ const Home = () => {
           <>
             <S.Banner
               onClick={increaseIndex}
-              $bgPhoto={makeImagePath(data?.results[1].backdrop_path || '')}
+              $bgPhoto={makeImagePath(data?.results[0].backdrop_path || '')}
             >
               <S.Title>{data?.results[0].title}</S.Title>
               <S.Overview>{data?.results[0].overview}</S.Overview>
@@ -60,9 +60,22 @@ const Home = () => {
                     )
                     .map((movie) => (
                       <S.Box
-                        $bgPhoto={makeImagePath(movie.backdrop_path, 'w500')}
+                        className="box"
+                        variants={S.boxVariants}
+                        whileHover={'hover'}
+                        initial={'normal'}
+                        transition={{ type: 'tween' }}
                         key={movie.id}
-                      />
+                      >
+                        <S.Image
+                          className="img"
+                          src={makeImagePath(movie.backdrop_path, 'w500')}
+                          alt={movie.title}
+                        />
+                        <S.Info variants={S.infoVariants}>
+                          <h4>{movie.title}</h4>
+                        </S.Info>
+                      </S.Box>
                     ))}
                 </S.Row>
               </AnimatePresence>
