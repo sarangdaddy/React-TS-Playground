@@ -1,30 +1,11 @@
-const BASE_URL = 'https://movies-api.nomadcoders.workers.dev';
-
-export function getPopular() {
-  return fetch(`${BASE_URL}/popular`).then((r) => r.json());
+export interface IGetMoviesResult {
+  page: number;
+  results: IMovie[];
+  total_pages: number;
+  total_results: number;
 }
 
-export function getNowPlaying() {
-  return fetch(`${BASE_URL}/now-playing`).then((r) => r.json());
-}
-
-export function getComingSoon() {
-  return fetch(`${BASE_URL}/coming-soon`).then((r) => r.json());
-}
-
-export function getMovie(id: string) {
-  return fetch(`${BASE_URL}/movie?id=${id}`).then((r) => r.json());
-}
-
-export function makeImagePath(image: string) {
-  return `https://image.tmdb.org/t/p/w500${image}`;
-}
-
-export function makeBgPath(image: string) {
-  return `https://image.tmdb.org/t/p/original${image}`;
-}
-
-interface IMovie {
+export interface IMovie {
   adult: boolean;
   backdrop_path: string;
   genre_ids: number[];
@@ -56,31 +37,31 @@ export interface IMovieDetail extends IMovie {
   tagline: string;
 }
 
-interface BelongsToCollection {
+export interface BelongsToCollection {
   id: number;
   name: string;
   poster_path: string;
   backdrop_path: string;
 }
 
-interface Genre {
+export interface Genre {
   id: number;
   name: string;
 }
 
-interface ProductionCompany {
+export interface ProductionCompany {
   id: number;
   logo_path: string;
   name: string;
   origin_country: string;
 }
 
-interface ProductionCountry {
+export interface ProductionCountry {
   iso_3166_1: string;
   name: string;
 }
 
-interface SpokenLanguage {
+export interface SpokenLanguage {
   english_name: string;
   iso_639_1: string;
   name: string;

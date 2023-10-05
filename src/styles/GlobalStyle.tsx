@@ -61,8 +61,9 @@ a {
 body {
   font-weight: 300;
   font-family: 'Source Sans 3', sans-serif;
-  color:black;
   line-height: 1.2;
+  color : ${(props) => props.theme.white.darker};
+  background-color : ${(props) => props.theme.black.darker}
 }
 `;
 
