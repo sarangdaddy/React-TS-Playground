@@ -21,6 +21,7 @@ time, mark, audio, video {
   font: inherit;
   vertical-align: baseline;
 }
+
 /* HTML5 display-role reset for older browsers */
 article, aside, details, figcaption, figure,
 footer, header, hgroup, main, menu, nav, section {
@@ -63,7 +64,8 @@ body {
   font-family: 'Source Sans 3', sans-serif;
   line-height: 1.2;
   color : ${(props) => props.theme.white.darker};
-  background-color : ${(props) => props.theme.black.darker}
+  background-color : ${(props) => props.theme.black.darker};
+  overflow-x: hidden;
 }
 `;
 
