@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.js": "/react-ts-playground/static/js/main.d651001c.js",
+    "main.js": "/react-ts-playground/static/js/main.e5cda07b.js",
     "index.html": "/react-ts-playground/index.html",
-    "main.d651001c.js.map": "/react-ts-playground/static/js/main.d651001c.js.map"
+    "main.e5cda07b.js.map": "/react-ts-playground/static/js/main.e5cda07b.js.map"
   },
   "entrypoints": [
-    "static/js/main.d651001c.js"
+    "static/js/main.e5cda07b.js"
   ]
 }
