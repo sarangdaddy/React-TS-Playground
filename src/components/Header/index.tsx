@@ -9,13 +9,7 @@ import {
   useScroll,
 } from 'framer-motion';
 import useClickOutside from '@/Hooks/useClickOutside';
-
-const TABS = [
-  { id: 0, label: '홈', path: ROUTE_PATH.HOME },
-  { id: 1, label: '인기시리즈', path: ROUTE_PATH.POPULAR },
-  { id: 2, label: '개봉예정작', path: ROUTE_PATH.COMING_SOON },
-  { id: 3, label: '현재상영작', path: ROUTE_PATH.NOW_PLAYING },
-];
+import { HEADER_LIST } from '@/constants/header';
 
 const Header = () => {
   const [searchOpen, setSearchOpen] = useState(false);
@@ -63,9 +57,9 @@ const Header = () => {
           </S.Logo>
         </Link>
         <S.Items>
-          {TABS.map((tab) => (
-            <S.Item key={tab.id} to={tab.path}>
-              {tab.label}
+          {HEADER_LIST.map((list) => (
+            <S.Item key={list.id} to={list.path}>
+              {list.label}
             </S.Item>
           ))}
         </S.Items>

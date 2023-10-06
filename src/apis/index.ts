@@ -1,12 +1,10 @@
-const API_KEY = 'f6b16b57ffc789afe0c7942fc8ef2072';
-const BASE_URL = 'https://api.themoviedb.org/3/';
+import { AUTHORIZATION, BASE_URL } from '@/constants/api';
 
 const options = {
   method: 'GET',
   headers: {
     accept: 'application/json',
-    Authorization:
-      'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmNmIxNmI1N2ZmYzc4OWFmZTBjNzk0MmZjOGVmMjA3MiIsInN1YiI6IjY1MWU2YTFiNWIxMjQwMDBhZDY4MjllYSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.WH7VKPkX9aQi-8BvHxkTXV_9kIw5iYZnMucIxiDyBcg',
+    Authorization: `Bearer ${AUTHORIZATION}`,
   },
 };
 
