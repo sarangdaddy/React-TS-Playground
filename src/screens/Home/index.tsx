@@ -5,16 +5,28 @@ import * as S from './styles';
 import { getTopRatedMovies } from '@/apis/index';
 import { IGetMoviesResult } from '@/types';
 import { makeImagePath } from '@/Utils';
-
-const SLIDER_OFFSET = 6;
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { SLIDER_OFFSET } from '@/constants/home';
 
 const Home = () => {
+  console.log('BASE_URL:', process.env.REACT_APP_BASE_URL);
+  console.log('API_TOKEN:', process.env.REACT_APP_API_TOKEN);
+
+  const navigate = useNavigate();
+  const location = useLocation();
+  const selectedMovieId = useParams();
   const { isLoading, data } = useQuery<IGetMoviesResult>({
     queryKey: ['topRated'],
     queryFn: getTopRatedMovies,
   });
   const [sliderPage, setSliderPage] = useState(0);
   const [leaving, setLeaving] = useState(false);
+
+  const selectedMovieInfo =
+    selectedMovieId &&
+    data?.results.find(
+      (movie) => movie.id.toString() === selectedMovieId.movieId,
+    );
 
   const increaseIndex = () => {
     if (data) {
@@ -27,6 +39,13 @@ const Home = () => {
   };
 
   const toggleLeaving = () => setLeaving((prev) => !prev);
+  const onBoxClicked = (movieId: number) => {
+    navigate(`/movies/${movieId}`);
+  };
+
+  const onOverlayClick = () => {
+    navigate(-1);
+  };
 
   return (
     <>
@@ -37,7 +56,7 @@ const Home = () => {
           <>
             <S.Banner
               onClick={increaseIndex}
-              $bgPhoto={makeImagePath(data?.results[1].backdrop_path || '')}
+              $bgPhoto={makeImagePath(data?.results[0].backdrop_path || '')}
             >
               <S.Title>{data?.results[0].title}</S.Title>
               <S.Overview>{data?.results[0].overview}</S.Overview>
@@ -60,13 +79,55 @@ const Home = () => {
                     )
                     .map((movie) => (
                       <S.Box
-                        $bgPhoto={makeImagePath(movie.backdrop_path, 'w500')}
+                        layoutId={movie.id + ''}
+                        className="box"
+                        variants={S.boxVariants}
+                        whileHover={'hover'}
+                        initial={'normal'}
+                        transition={{ type: 'tween' }}
                         key={movie.id}
-                      />
+                        onClick={() => onBoxClicked(movie.id)}
+                      >
+                        <S.Image
+                          className="img"
+                          src={makeImagePath(movie.backdrop_path, 'w500')}
+                          alt={movie.title}
+                        />
+                        <S.Info variants={S.infoVariants}>
+                          <h4>{movie.title}</h4>
+                        </S.Info>
+                      </S.Box>
                     ))}
                 </S.Row>
               </AnimatePresence>
             </S.Slider>
+            <AnimatePresence>
+              {location.pathname !== '/' ? (
+                <>
+                  <S.Overlay
+                    onClick={onOverlayClick}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                  />
+                  <S.Modal layoutId={selectedMovieId.movieId}>
+                    {selectedMovieInfo && (
+                      <>
+                        <S.ModalCover
+                          $bgPhoto={makeImagePath(
+                            selectedMovieInfo.backdrop_path,
+                            'w500',
+                          )}
+                        />
+                        <S.ModalTitle>{selectedMovieInfo.title}</S.ModalTitle>
+                        <S.ModalDetail>
+                          {selectedMovieInfo.overview}
+                        </S.ModalDetail>
+                      </>
+                    )}
+                  </S.Modal>
+                </>
+              ) : null}
+            </AnimatePresence>
           </>
         )}
       </S.Wrapper>
