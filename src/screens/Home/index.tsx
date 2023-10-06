@@ -5,16 +5,26 @@ import * as S from './styles';
 import { getTopRatedMovies } from '@/apis/index';
 import { IGetMoviesResult } from '@/types';
 import { makeImagePath } from '@/Utils';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 const SLIDER_OFFSET = 6;
 
 const Home = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const selectedMovieId = useParams();
   const { isLoading, data } = useQuery<IGetMoviesResult>({
     queryKey: ['topRated'],
     queryFn: getTopRatedMovies,
   });
   const [sliderPage, setSliderPage] = useState(0);
   const [leaving, setLeaving] = useState(false);
+
+  const selectedMovieInfo =
+    selectedMovieId &&
+    data?.results.find(
+      (movie) => movie.id.toString() === selectedMovieId.movieId,
+    );
 
   const increaseIndex = () => {
     if (data) {
@@ -27,6 +37,13 @@ const Home = () => {
   };
 
   const toggleLeaving = () => setLeaving((prev) => !prev);
+  const onBoxClicked = (movieId: number) => {
+    navigate(`/movies/${movieId}`);
+  };
+
+  const onOverlayClick = () => {
+    navigate(-1);
+  };
 
   return (
     <>
@@ -60,12 +77,14 @@ const Home = () => {
                     )
                     .map((movie) => (
                       <S.Box
+                        layoutId={movie.id + ''}
                         className="box"
                         variants={S.boxVariants}
                         whileHover={'hover'}
                         initial={'normal'}
                         transition={{ type: 'tween' }}
                         key={movie.id}
+                        onClick={() => onBoxClicked(movie.id)}
                       >
                         <S.Image
                           className="img"
@@ -80,6 +99,33 @@ const Home = () => {
                 </S.Row>
               </AnimatePresence>
             </S.Slider>
+            <AnimatePresence>
+              {location.pathname !== '/' ? (
+                <>
+                  <S.Overlay
+                    onClick={onOverlayClick}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                  />
+                  <S.Modal layoutId={selectedMovieId.movieId}>
+                    {selectedMovieInfo && (
+                      <>
+                        <S.ModalCover
+                          $bgPhoto={makeImagePath(
+                            selectedMovieInfo.backdrop_path,
+                            'w500',
+                          )}
+                        />
+                        <S.ModalTitle>{selectedMovieInfo.title}</S.ModalTitle>
+                        <S.ModalDetail>
+                          {selectedMovieInfo.overview}
+                        </S.ModalDetail>
+                      </>
+                    )}
+                  </S.Modal>
+                </>
+              ) : null}
+            </AnimatePresence>
           </>
         )}
       </S.Wrapper>

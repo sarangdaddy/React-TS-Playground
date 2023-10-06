@@ -16,6 +16,12 @@ export const router = createBrowserRouter([
       {
         path: ROUTE_PATH.HOME,
         element: <Home />,
+        children: [
+          {
+            path: ROUTE_PATH.MOVIE_INFO,
+            element: <Home />,
+          },
+        ],
       },
       {
         path: ROUTE_PATH.POPULAR,

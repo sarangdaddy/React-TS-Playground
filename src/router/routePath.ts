@@ -4,4 +4,5 @@ export const ROUTE_PATH = {
   POPULAR: `${process.env.PUBLIC_URL}/popular`,
   COMING_SOON: `${process.env.PUBLIC_URL}/coming-soon`,
   NOW_PLAYING: `${process.env.PUBLIC_URL}/now-playing`,
+  MOVIE_INFO: `${process.env.PUBLIC_URL}/movies/:movieId`,
 } as const;
