@@ -8,6 +8,7 @@ import { makeImagePath } from '@/Utils';
 import { useNavigate, useParams, useMatch, PathMatch } from 'react-router-dom';
 import { SLIDER_OFFSET } from '@/constants/home';
 import { ROUTE_PATH } from '@/router/routePath';
+import Banner from '@/components/Banner';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -55,13 +56,7 @@ const Home = () => {
           <S.Loader>Loading...</S.Loader>
         ) : (
           <>
-            <S.Banner
-              onClick={increaseIndex}
-              $bgPhoto={makeImagePath(data?.results[0].backdrop_path || '')}
-            >
-              <S.Title>{data?.results[0].title}</S.Title>
-              <S.Overview>{data?.results[0].overview}</S.Overview>
-            </S.Banner>
+            <Banner moviesList={data?.results} />
             <S.Slider>
               <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
                 <S.Row
