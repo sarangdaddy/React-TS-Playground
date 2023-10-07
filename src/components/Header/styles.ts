@@ -60,7 +60,7 @@ export const Item = styled(NavLink)`
   }
 `;
 
-export const Search = styled.span`
+export const Search = styled.form`
   position: relative;
   color: white;
   display: flex;
