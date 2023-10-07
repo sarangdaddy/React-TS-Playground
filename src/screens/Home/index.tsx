@@ -9,9 +9,6 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { SLIDER_OFFSET } from '@/constants/home';
 
 const Home = () => {
-  console.log('BASE_URL:', process.env.REACT_APP_BASE_URL);
-  console.log('API_TOKEN:', process.env.REACT_APP_API_TOKEN);
-
   const navigate = useNavigate();
   const location = useLocation();
   const selectedMovieId = useParams();

@@ -71,3 +71,7 @@ export interface IAPIResponse {
   page: number;
   results: IMovie[];
 }
+
+export interface IForm {
+  keyword: string;
+}

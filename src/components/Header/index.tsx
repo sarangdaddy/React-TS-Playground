@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ROUTE_PATH } from '@/router/routePath';
 import * as S from './styles';
 import {
@@ -10,12 +10,16 @@ import {
 } from 'framer-motion';
 import useClickOutside from '@/Hooks/useClickOutside';
 import { HEADER_LIST } from '@/constants/header';
+import { useForm } from 'react-hook-form';
+import { IForm } from '@/types';
 
 const Header = () => {
+  const navigate = useNavigate();
   const [searchOpen, setSearchOpen] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
   const { scrollY } = useScroll();
   const navAnimation = useAnimation();
+  const { register, handleSubmit, setFocus, reset } = useForm<IForm>();
 
   useMotionValueEvent(scrollY, 'change', (lastSet) => {
     if (lastSet > 16) {
@@ -26,16 +30,19 @@ const Header = () => {
   });
 
   const toggleSearch = () => {
+    setFocus('keyword');
     setSearchOpen((prev) => !prev);
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
   };
 
   useClickOutside({
-    ref: inputRef,
+    ref: formRef,
     callback: () => setSearchOpen(false),
   });
+
+  const onValid = (data: IForm) => {
+    navigate(`${ROUTE_PATH.SEARCH}?keyword=${data.keyword}`);
+    reset();
+  };
 
   return (
     <S.Navigation
@@ -65,7 +72,7 @@ const Header = () => {
         </S.Items>
       </S.Column>
       <S.Column>
-        <S.Search>
+        <S.Search ref={formRef} onSubmit={handleSubmit(onValid)}>
           <motion.svg
             onClick={toggleSearch}
             animate={{ x: searchOpen ? -185 : 0 }}
@@ -81,9 +88,15 @@ const Header = () => {
             />
           </motion.svg>
           <S.Input
+            {...register('keyword', {
+              required: '입렵하세요',
+              minLength: {
+                value: 2,
+                message: '2글자 이상 입력하세요.',
+              },
+            })}
             animate={{ scaleX: searchOpen ? 1 : 0 }}
             initial={{ scaleX: 0 }}
-            ref={inputRef}
             transition={{ type: 'linear' }}
             placeholder="제목, 사람, 장르"
           />
