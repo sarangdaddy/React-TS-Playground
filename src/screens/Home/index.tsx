@@ -7,6 +7,7 @@ import { IGetMoviesResult } from '@/types';
 import { makeImagePath } from '@/Utils';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { SLIDER_OFFSET } from '@/constants/home';
+import { ROUTE_PATH } from '@/router/routePath';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -37,11 +38,11 @@ const Home = () => {
 
   const toggleLeaving = () => setLeaving((prev) => !prev);
   const onBoxClicked = (movieId: number) => {
-    navigate(`/movies/${movieId}`);
+    navigate(`${ROUTE_PATH.HOME}movies/${movieId}`);
   };
 
   const onOverlayClick = () => {
-    navigate(-1);
+    navigate(ROUTE_PATH.HOME);
   };
 
   return (
@@ -99,7 +100,7 @@ const Home = () => {
               </AnimatePresence>
             </S.Slider>
             <AnimatePresence>
-              {location.pathname !== '/' ? (
+              {location.pathname !== ROUTE_PATH.HOME ? (
                 <>
                   <S.Overlay
                     onClick={onOverlayClick}

@@ -1,4 +1,4 @@
-import { AUTHORIZATION, BASE_URL } from '@/constants/api';
+import { AUTHORIZATION, API_BASE_URL } from '@/constants/api';
 
 const options = {
   method: 'GET',
@@ -11,7 +11,7 @@ const options = {
 export const getTopRatedMovies = async () => {
   try {
     const res = await fetch(
-      `${BASE_URL}/movie/top_rated?language=en-US&page=1`,
+      `${API_BASE_URL}/movie/top_rated?language=en-US&page=1`,
       options,
     );
     const res_1 = await res.json();
