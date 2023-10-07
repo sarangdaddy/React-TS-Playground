@@ -5,13 +5,12 @@ import * as S from './styles';
 import { getTopRatedMovies } from '@/apis/index';
 import { IGetMoviesResult } from '@/types';
 import { makeImagePath } from '@/Utils';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useMatch, PathMatch } from 'react-router-dom';
 import { SLIDER_OFFSET } from '@/constants/home';
 import { ROUTE_PATH } from '@/router/routePath';
 
 const Home = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const selectedMovieId = useParams();
   const { isLoading, data } = useQuery<IGetMoviesResult>({
     queryKey: ['topRated'],
@@ -25,6 +24,10 @@ const Home = () => {
     data?.results.find(
       (movie) => movie.id.toString() === selectedMovieId.movieId,
     );
+
+  const moviePathMatch: PathMatch<string> | null = useMatch(
+    ROUTE_PATH.MOVIE_INFO,
+  );
 
   const increaseIndex = () => {
     if (data) {
@@ -100,7 +103,7 @@ const Home = () => {
               </AnimatePresence>
             </S.Slider>
             <AnimatePresence>
-              {location.pathname !== ROUTE_PATH.HOME ? (
+              {moviePathMatch ? (
                 <>
                   <S.Overlay
                     onClick={onOverlayClick}
