@@ -15,6 +15,8 @@ const Popular = () => {
     queryFn: getPopularMovies,
   });
 
+  const showDetail = location.pathname.includes('/movies/');
+
   return (
     <S.Wrapper>
       {isLoading ? (
@@ -23,7 +25,7 @@ const Popular = () => {
         <>
           <Banner moviesList={data?.results} />
           <Slider moviesList={data?.results} />
-          <Detail pathName={location.pathname} moviesList={data?.results} />
+          {showDetail && <Detail />}
         </>
       )}
     </S.Wrapper>

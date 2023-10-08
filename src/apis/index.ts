@@ -59,3 +59,16 @@ export const getNowPlayingMovies = async () => {
     return err;
   }
 };
+
+export const getMovieDetail = async (movieId: string | undefined) => {
+  try {
+    const res = await fetch(
+      `${API_BASE_URL}/movie/${movieId}?language=en-US`,
+      options,
+    );
+    const res_1 = await res.json();
+    return res_1;
+  } catch (err) {
+    return err;
+  }
+};
