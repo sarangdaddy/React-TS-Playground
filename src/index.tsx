@@ -7,6 +7,7 @@ import App from './components/App';
 import GlobalStyle from './styles/GlobalStyle';
 import { ThemeProvider } from 'styled-components';
 import { theme } from '@/styles/theme';
+import './FontAwesome';
 
 const queryClient = new QueryClient();
 

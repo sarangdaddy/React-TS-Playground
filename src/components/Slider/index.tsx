@@ -10,33 +10,56 @@ interface SliderProps {
   moviesList?: IMovie[];
 }
 
+enum ControlKeys {
+  LEFT = -1,
+  RIGHT = 1,
+}
+
 const Slider = ({ moviesList = [] }: SliderProps) => {
   const navigate = useNavigate();
   const [sliderPage, setSliderPage] = useState(0);
   const [leaving, setLeaving] = useState(false);
+  const [direction, setDirection] = useState<'left' | 'right'>('right');
 
-  const increaseIndex = () => {
-    if (moviesList) {
-      if (leaving) return;
+  const handleSliderPage = (controlKey: ControlKeys) => {
+    if (moviesList && !leaving) {
       setLeaving(true);
+      setDirection(controlKey === ControlKeys.RIGHT ? 'right' : 'left');
       const totalMovies = moviesList.length - 1;
       const maxSliderPage = Math.floor(totalMovies / SLIDER_OFFSET) - 1;
-      setSliderPage((prev) => (prev === maxSliderPage ? 0 : prev + 1));
+
+      setSliderPage((prev) => {
+        const newPage = prev + controlKey;
+        if (newPage < 0) return maxSliderPage;
+        if (newPage > maxSliderPage) return 0;
+        return newPage;
+      });
     }
   };
 
   const toggleLeaving = () => setLeaving((prev) => !prev);
 
   const onBoxClicked = (movieId: number) => {
-    console.log(movieId);
     navigate(`movies/${movieId}`);
   };
 
   return (
     <S.Slider>
       <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
+        <S.SliderControl>
+          <S.StyledIcon
+            onClick={() => handleSliderPage(ControlKeys.LEFT)}
+            icon="chevron-left"
+            size="3x"
+          />
+          <S.StyledIcon
+            onClick={() => handleSliderPage(ControlKeys.RIGHT)}
+            icon="chevron-right"
+            size="3x"
+          />
+        </S.SliderControl>
         <S.Row
-          variants={S.rowVariants}
+          variants={S.rowVariants[direction]}
           initial="hidden"
           animate="visible"
           exit="exit"

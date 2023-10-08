@@ -1,10 +1,9 @@
-import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
+import { useQuery } from '@tanstack/react-query';
 import * as S from './styles';
 import { makeImagePath } from '@/Utils';
 import { getMovieDetail } from '@/apis';
-import { useQuery } from '@tanstack/react-query';
 import Loader from '@/screens/Loader';
 
 const Detail = () => {
@@ -19,13 +18,6 @@ const Detail = () => {
   const onOverlayClick = () => {
     navigate(-1);
   };
-
-  useEffect(() => {
-    console.log('Component Mounted');
-    return () => {
-      console.log('Component Unmounted');
-    };
-  }, []);
 
   return (
     <AnimatePresence>

@@ -1,21 +1,25 @@
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export const Slider = styled.div`
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
   position: relative;
-  top: -112px;
-  margin: 0 50px;
+  top: -80px;
 `;
 
 export const rowVariants = {
-  hidden: {
-    x: window.innerWidth - 50,
+  left: {
+    hidden: { x: -window.innerWidth },
+    visible: { x: 0 },
+    exit: { x: window.innerWidth },
   },
-  visible: {
-    x: 0,
-  },
-  exit: {
-    x: -window.innerWidth + 50,
+  right: {
+    hidden: { x: window.innerWidth },
+    visible: { x: 0 },
+    exit: { x: -window.innerWidth },
   },
 };
 
@@ -24,7 +28,7 @@ export const Row = styled(motion.div)`
   gap: 10px;
   grid-template-columns: repeat(6, 1fr);
   position: absolute;
-  width: 100%;
+  margin: 0 50px;
 `;
 
 export const boxVariants = {
@@ -83,5 +87,25 @@ export const Info = styled(motion.div)`
     text-align: center;
     font-size: 13px;
     font-weight: 400;
+  }
+`;
+
+export const SliderControl = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin: 0 12px;
+`;
+
+export const StyledIcon = styled(FontAwesomeIcon)`
+  opacity: 0.7;
+  transform: scale(1);
+  cursor: pointer;
+  transition:
+    opacity 0.1s ease-in-out,
+    transform 0.1s ease-in-out;
+
+  &:hover {
+    opacity: 1;
+    transform: scale(1.2);
   }
 `;
