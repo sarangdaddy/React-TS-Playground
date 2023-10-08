@@ -7,9 +7,10 @@ import { ROUTE_PATH } from '@/router/routePath';
 
 interface DetailProps {
   moviesList?: IMovie[];
+  pathName: string;
 }
 
-const Detail = ({ moviesList = [] }: DetailProps) => {
+const Detail = ({ moviesList = [], pathName }: DetailProps) => {
   const navigate = useNavigate();
   const selectedMovieId = useParams();
 
@@ -18,7 +19,7 @@ const Detail = ({ moviesList = [] }: DetailProps) => {
     moviesList.find((movie) => movie.id.toString() === selectedMovieId.movieId);
 
   const moviePathMatch: PathMatch<string> | null = useMatch(
-    ROUTE_PATH.MOVIE_INFO,
+    `${pathName}/movie/${selectedMovieId.movieId}`,
   );
 
   const onOverlayClick = () => {
