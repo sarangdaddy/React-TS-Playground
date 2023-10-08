@@ -4,7 +4,6 @@ import { AnimatePresence } from 'framer-motion';
 import { makeImagePath } from '@/Utils';
 import * as S from './styles';
 import { IMovie } from '@/types';
-import { ROUTE_PATH } from '@/router/routePath';
 import { SLIDER_OFFSET } from '@/constants/home';
 
 interface SliderProps {
@@ -29,7 +28,7 @@ const Slider = ({ moviesList = [] }: SliderProps) => {
   const toggleLeaving = () => setLeaving((prev) => !prev);
 
   const onBoxClicked = (movieId: number) => {
-    navigate(`${ROUTE_PATH.HOME}movies/${movieId}`);
+    navigate(`movies/${movieId}`);
   };
 
   return (
