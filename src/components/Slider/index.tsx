@@ -29,7 +29,7 @@ const Slider = ({ moviesList = [] }: SliderProps) => {
   const toggleLeaving = () => setLeaving((prev) => !prev);
 
   const onBoxClicked = (movieId: number) => {
-    navigate(`${ROUTE_PATH.HOME}movies/${movieId}`);
+    navigate(`movies/${movieId}`);
   };
 
   return (

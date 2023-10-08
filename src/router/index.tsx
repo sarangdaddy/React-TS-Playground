@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { Navigate, createBrowserRouter } from 'react-router-dom';
 import { ROUTE_PATH } from './routePath';
 import Layout from '@/screens/Layout';
 import NotFound from '@/screens/NotFound';
@@ -14,6 +14,10 @@ export const router = createBrowserRouter([
     path: ROUTE_PATH.ROOT,
     errorElement: <NotFound />,
     children: [
+      // {
+      //   index: true,
+      //   element: <Navigate to={ROUTE_PATH.HOME} />,
+      // },
       {
         path: ROUTE_PATH.HOME,
         element: <Home />,
@@ -27,14 +31,32 @@ export const router = createBrowserRouter([
       {
         path: ROUTE_PATH.POPULAR,
         element: <Popular />,
+        children: [
+          {
+            path: ROUTE_PATH.MOVIE_INFO,
+            element: <Popular />,
+          },
+        ],
       },
       {
         path: ROUTE_PATH.COMING_SOON,
         element: <ComingSoon />,
+        children: [
+          {
+            path: ROUTE_PATH.MOVIE_INFO,
+            element: <ComingSoon />,
+          },
+        ],
       },
       {
         path: ROUTE_PATH.NOW_PLAYING,
         element: <NowPlaying />,
+        children: [
+          {
+            path: ROUTE_PATH.MOVIE_INFO,
+            element: <NowPlaying />,
+          },
+        ],
       },
       {
         path: ROUTE_PATH.SEARCH,

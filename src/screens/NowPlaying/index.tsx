@@ -1,3 +1,4 @@
+import { useLocation } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { getNowPlayingMovies } from '@/apis/index';
 import { IGetMoviesResult } from '@/types';
@@ -8,6 +9,7 @@ import Detail from '@/components/Detail';
 import Loader from '@/screens/Loader';
 
 const NowPlaying = () => {
+  const location = useLocation();
   const { isLoading, data } = useQuery<IGetMoviesResult>({
     queryKey: ['nowPlaying'],
     queryFn: getNowPlayingMovies,
@@ -21,7 +23,7 @@ const NowPlaying = () => {
         <>
           <Banner moviesList={data?.results} />
           <Slider moviesList={data?.results} />
-          <Detail moviesList={data?.results} />
+          <Detail pathName={location.pathname} moviesList={data?.results} />
         </>
       )}
     </S.Wrapper>
