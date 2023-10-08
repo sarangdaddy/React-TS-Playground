@@ -23,10 +23,6 @@ const Detail = ({ moviesList = [], pathName }: DetailProps) => {
     `${initialPathNameRef.current}/movies/${selectedMovieId.movieId}`,
   );
 
-  console.log(
-    `${initialPathNameRef.current}/movies/${selectedMovieId.movieId}`,
-  );
-
   const onOverlayClick = () => {
     navigate(-1);
   };

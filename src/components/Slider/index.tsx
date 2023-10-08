@@ -4,7 +4,6 @@ import { AnimatePresence } from 'framer-motion';
 import { makeImagePath } from '@/Utils';
 import * as S from './styles';
 import { IMovie } from '@/types';
-import { ROUTE_PATH } from '@/router/routePath';
 import { SLIDER_OFFSET } from '@/constants/home';
 
 interface SliderProps {
