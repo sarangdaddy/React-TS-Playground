@@ -19,12 +19,12 @@ const Slider = ({ moviesList = [] }: SliderProps) => {
   const navigate = useNavigate();
   const [sliderPage, setSliderPage] = useState(0);
   const [leaving, setLeaving] = useState(false);
-  const [direction, setDirection] = useState<'left' | 'right'>('right');
+  const [direction, setDirection] = useState(ControlKeys.RIGHT);
 
   const handleSliderPage = (controlKey: ControlKeys) => {
     if (moviesList && !leaving) {
       setLeaving(true);
-      setDirection(controlKey === ControlKeys.RIGHT ? 'right' : 'left');
+      setDirection(controlKey);
       const totalMovies = moviesList.length - 1;
       const maxSliderPage = Math.floor(totalMovies / SLIDER_OFFSET) - 1;
 
@@ -45,7 +45,11 @@ const Slider = ({ moviesList = [] }: SliderProps) => {
 
   return (
     <S.Slider>
-      <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
+      <AnimatePresence
+        initial={false}
+        custom={direction === ControlKeys.RIGHT}
+        onExitComplete={toggleLeaving}
+      >
         <S.SliderControl>
           <S.StyledIcon
             onClick={() => handleSliderPage(ControlKeys.LEFT)}
@@ -59,7 +63,8 @@ const Slider = ({ moviesList = [] }: SliderProps) => {
           />
         </S.SliderControl>
         <S.Row
-          variants={S.rowVariants[direction]}
+          custom={direction === ControlKeys.RIGHT}
+          variants={S.rowVariants}
           initial="hidden"
           animate="visible"
           exit="exit"
