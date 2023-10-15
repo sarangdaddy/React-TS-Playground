@@ -86,7 +86,8 @@ const Slider = ({ moviesList = [] }: SliderProps) => {
                 initial={'normal'}
                 transition={{ type: 'tween' }}
                 key={movie.id}
-                onClick={() => onBoxClicked(movie.id)}
+                onClick={() => (!leaving ? onBoxClicked(movie.id) : null)}
+                $leaving={leaving}
               >
                 <S.Image
                   className="img"

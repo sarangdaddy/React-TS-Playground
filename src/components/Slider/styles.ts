@@ -43,9 +43,10 @@ export const boxVariants = {
   },
 };
 
-export const Box = styled(motion.div)`
+export const Box = styled(motion.div)<{ $leaving: boolean }>`
   height: 200px;
   cursor: pointer;
+  pointer-events: ${(props) => (props.$leaving ? 'none' : 'auto')};
 
   &:first-child {
     transform-origin: center left;
