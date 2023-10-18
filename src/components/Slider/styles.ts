@@ -11,12 +11,12 @@ export const Slider = styled.div`
 `;
 
 export const rowVariants = {
-  hidden: (direction: boolean) => ({
-    x: direction ? window.innerWidth : -window.innerWidth,
+  hidden: (direction: string) => ({
+    x: direction === 'right' ? window.innerWidth : -window.innerWidth,
   }),
   visible: { x: 0 },
-  exit: (direction: boolean) => ({
-    x: direction ? -window.innerWidth : window.innerWidth,
+  exit: (direction: string) => ({
+    x: direction === 'right' ? -window.innerWidth : window.innerWidth,
   }),
 };
 
