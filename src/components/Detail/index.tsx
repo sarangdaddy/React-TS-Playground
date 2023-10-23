@@ -29,7 +29,7 @@ const Detail = () => {
         />
         <S.Modal layoutId={selectedMovieId.movieId}>
           {isLoading ? (
-            <Loader />
+            <Loader viewHeight="80vh" />
           ) : data ? (
             <>
               <S.ModalCover
@@ -37,6 +37,24 @@ const Detail = () => {
               />
               <S.ModalTitle>{data.title}</S.ModalTitle>
               <S.ModalDetail>{data.overview}</S.ModalDetail>
+              <S.ModalCloseBtn onClick={onOverlayClick}>
+                <svg
+                  width={30}
+                  height={30}
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={3}
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </S.ModalCloseBtn>
             </>
           ) : null}
         </S.Modal>

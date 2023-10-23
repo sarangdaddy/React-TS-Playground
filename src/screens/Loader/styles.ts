@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 
-export const Container = styled.div<{ heightOption: string }>`
-  height: ${(prop) => prop.heightOption};
+export const Container = styled.div<{ $heightOption: string }>`
+  height: ${(prop) => prop.$heightOption};
   display: flex;
   justify-content: center;
   align-items: center;
