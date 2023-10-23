@@ -16,27 +16,48 @@ export const Modal = styled(motion.div)`
 
 export const ModalCover = styled.div<{ $bgPhoto: string }>`
   width: 100%;
+  height: 100%;
   background-size: cover;
   background-position: center center;
-  height: 400px;
+  /* height: 400px; */
+  z-index: 0;
   background-image: linear-gradient(to top, black, transparent),
     url(${(props) => props.$bgPhoto});
 `;
 
-export const ModalTitle = styled.h2`
+export const ModalInfoBox = styled.div`
+  position: absolute;
+  z-index: 1;
+  top: 55%;
+  display: flex;
+  flex-direction: column;
+  padding: 0 12px;
+  gap: 8px;
+`;
+
+export const ModalTitle = styled.span`
   color: ${(props) => props.theme.white.lighter};
-  padding: 20px;
   font-size: 46px;
   font-weight: 600;
-  position: relative;
-  top: -100px;
+`;
+
+export const ModalAddInfos = styled.div`
+  display: flex;
+  gap: 8px;
+
+  :last-child {
+    color: rgba(255, 255, 255, 0.5);
+  }
+`;
+
+export const ModalGenres = styled.span`
+  color: ${(props) => props.theme.gray.middle};
+  font-size: 16px;
+  font-weight: 400;
 `;
 
 export const ModalDetail = styled.p`
-  padding: 20px;
-  color: ${(props) => props.theme.white.lighter};
-  position: relative;
-  top: -130px;
+  color: ${(props) => props.theme.white.darker};
 `;
 
 export const Overlay = styled(motion.div)`

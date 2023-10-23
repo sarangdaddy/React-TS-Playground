@@ -5,12 +5,13 @@ import * as S from './styles';
 import { makeImagePath } from '@/Utils';
 import { getMovieDetail } from '@/apis';
 import Loader from '@/screens/Loader';
+import { IMovieDetail } from '@/types';
 
 const Detail = () => {
   const navigate = useNavigate();
   const selectedMovieId = useParams();
 
-  const { isLoading, data } = useQuery({
+  const { isLoading, data } = useQuery<IMovieDetail>({
     queryKey: ['movieId', selectedMovieId.movieId],
     queryFn: () => getMovieDetail(selectedMovieId.movieId),
   });
@@ -35,8 +36,6 @@ const Detail = () => {
               <S.ModalCover
                 $bgPhoto={makeImagePath(data.backdrop_path, 'w500')}
               />
-              <S.ModalTitle>{data.title}</S.ModalTitle>
-              <S.ModalDetail>{data.overview}</S.ModalDetail>
               <S.ModalCloseBtn onClick={onOverlayClick}>
                 <svg
                   width={30}
@@ -55,6 +54,16 @@ const Detail = () => {
                   />
                 </svg>
               </S.ModalCloseBtn>
+              <S.ModalInfoBox>
+                <S.ModalTitle>{data.title}</S.ModalTitle>
+                <S.ModalAddInfos>
+                  {data.genres.map((genre) => (
+                    <S.ModalGenres key={genre.id}>{genre.name}</S.ModalGenres>
+                  ))}
+                  <div>({data.runtime} min)</div>
+                </S.ModalAddInfos>
+                <S.ModalDetail>{data.overview}</S.ModalDetail>
+              </S.ModalInfoBox>
             </>
           ) : null}
         </S.Modal>
